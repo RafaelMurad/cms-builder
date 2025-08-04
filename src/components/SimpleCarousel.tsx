@@ -107,6 +107,31 @@ export default function SimpleCarousel({
           opacity: 1,
         };
 
+      case "slideUp":
+        return {
+          ...baseStyles,
+          transform: `translateY(${isActive ? '0%' : '20%'})`,
+          opacity: isActive ? 1 : 0,
+          pointerEvents: isActive ? "auto" : "none",
+        };
+
+      case "scale":
+        return {
+          ...baseStyles,
+          transform: `scale(${isActive ? 1 : 0.9})`,
+          opacity: isActive ? 1 : 0,
+          pointerEvents: isActive ? "auto" : "none",
+        };
+
+      case "blur":
+        return {
+          ...baseStyles,
+          filter: `blur(${isActive ? '0px' : '8px'})`,
+          transform: `scale(${isActive ? 1 : 1.05})`,
+          opacity: isActive ? 1 : 0,
+          pointerEvents: isActive ? "auto" : "none",
+        };
+
       case "none":
       default:
         return {
