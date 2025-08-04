@@ -20,27 +20,27 @@ const Header = () => {
 
   return (
     <header
-      className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${
-        isScrolled ? "bg-white/90 backdrop-blur-sm shadow-sm" : "bg-transparent"
+      className={`fixed top-0 left-0 w-full z-50 transition-all duration-500 ${
+        isScrolled ? "bg-white/10 backdrop-blur-md" : "bg-transparent"
       }`}
     >
-      <div className="max-w-7xl mx-auto px-4 md:px-6 py-4">
+      <div className="max-w-7xl mx-auto px-6 md:px-8 py-6">
         <div className="flex items-center justify-between">
           <Link href="/">
             <Logo />
           </Link>
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center space-x-8">
+          <nav className="hidden md:flex items-center space-x-12">
             <Link
               href="/"
-              className="text-white hover:text-white/80 transition-colors"
+              className="text-white hover:text-white/70 transition-all duration-300 text-sm tracking-wider uppercase"
             >
               Home
             </Link>
             <Link
               href="/about"
-              className="text-white hover:text-white/80 transition-colors"
+              className="text-white hover:text-white/70 transition-all duration-300 text-sm tracking-wider uppercase"
             >
               About
             </Link>

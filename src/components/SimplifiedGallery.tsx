@@ -14,12 +14,12 @@ export default function SimplifiedGallery({ gallery }: SimplifiedGalleryProps) {
   // Early return if no items
   if (!gallery.items || gallery.items.length === 0) {
     return (
-      <section className="flex items-center justify-center min-h-screen bg-gray-100">
+      <section className="flex items-center justify-center h-screen bg-neutral-50">
         <div className="text-center">
-          <h2 className="text-xl font-semibold text-gray-600 mb-2">
+          <h2 className="text-xl font-medium text-neutral-600 mb-2">
             {gallery.title || "Gallery"}
           </h2>
-          <p className="text-gray-500">No content available</p>
+          <p className="text-neutral-400">No content available</p>
         </div>
       </section>
     );
@@ -77,8 +77,8 @@ export default function SimplifiedGallery({ gallery }: SimplifiedGalleryProps) {
   };
 
   return (
-    <section className={styles.containerClass}>
-      <div className={styles.innerClass}>{renderContent()}</div>
+    <section className="h-screen w-full flex items-center justify-center bg-neutral-50 relative">
+      <div className="w-full h-full">{renderContent()}</div>
     </section>
   );
 }

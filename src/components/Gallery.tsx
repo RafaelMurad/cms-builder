@@ -13,7 +13,7 @@ const Gallery = ({ galleries, className = "" }: GalleryProps) => {
   const galleryRef = useRef<HTMLDivElement>(null);
 
   return (
-    <div ref={galleryRef} className={`gallery-container ${className}`}>
+    <div ref={galleryRef} className={`w-full ${className}`}>
       {galleries.map((gallery) => (
         <SimplifiedGallery key={gallery.id} gallery={gallery} />
       ))}

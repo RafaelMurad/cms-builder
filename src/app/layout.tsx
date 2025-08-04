@@ -16,13 +16,15 @@ export default function RootLayout({ children }: RootLayoutProps) {
   return (
     <html lang="en">
       <body
-        className={`min-h-screen bg-neutral-50 font-sans ${inter.className}`}
+        className={`bg-neutral-50 font-sans overflow-x-hidden ${inter.className}`}
       >
         <Header />
-        {children}
+        <main className="relative">
+          {children}
+        </main>
         <a
           href="mailto:contact@studiohaus.com"
-          className="fixed bottom-8 left-8 z-50 px-6 py-3 bg-white text-black hover:bg-white/90 transition-colors duration-300"
+          className="fixed bottom-8 left-8 z-50 px-6 py-3 bg-white/90 backdrop-blur-sm text-black hover:bg-white transition-all duration-300 text-sm tracking-wide"
         >
           Contact
         </a>
