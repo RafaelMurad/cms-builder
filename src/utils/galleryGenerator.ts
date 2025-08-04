@@ -1,6 +1,5 @@
 import { GalleryConfig, MediaItem, AnimationConfig } from '../types';
 import { getAssetPath } from './assetPath';
-import { getAnimationConfig } from './animationConfigs';
 
 /**
  * Detects file type based on extension
@@ -87,7 +86,11 @@ export function createMediaItemFromFile(
  * @returns Default animation configuration
  */
 export function getDefaultAnimationConfig(): AnimationConfig {
-    return getAnimationConfig('fade');
+    return {
+        effect: 'fade',
+        duration: 0.6,
+        ease: 'power2.inOut'
+    };
 }
 
 /**
@@ -129,7 +132,11 @@ export function generateGalleryConfig(
 
     // Get the animation config based on the effect
     const effect = options?.animation?.effect || 'none';
-    const defaultAnimation = getAnimationConfig(effect);
+    const defaultAnimation = {
+        effect: effect,
+        duration: 0.6,
+        ease: 'power2.inOut' as const
+    };
 
     // Merge any custom animation options
     const mergedAnimation = {

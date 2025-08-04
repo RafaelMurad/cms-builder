@@ -31,15 +31,29 @@ export interface MediaItem {
     };
 }
 
-// Define animation effects as string literals
-export type AnimationEffectType = 'fade' | 'slide' | 'slide-up' | 'slide-down' | 'scale' | 'none';
+// Simplified animation types - focusing on essential functionality
+export type SimpleAnimationType = 'none' | 'fade' | 'slide';
 
-// Define ease functions as string literals
+export interface SimpleAnimationConfig {
+    type: SimpleAnimationType;
+    duration: number; // in seconds
+    easing: string; // CSS easing function
+}
+
+// Keep legacy types for backward compatibility during transition
+export type AnimationEffectType = 'fade' | 'slide' | 'slide-up' | 'slide-down' | 'scale' | 'none';
 export type EaseFunctionType = 'power1.in' | 'power1.out' | 'power1.inOut' |
     'power2.in' | 'power2.out' | 'power2.inOut' |
     'power3.in' | 'power3.out' | 'power3.inOut' | 'none';
 
-// Constants for compile-time safety and runtime use
+// Simplified constants
+export const SimpleAnimations = {
+    NONE: 'none',
+    FADE: 'fade',
+    SLIDE: 'slide'
+} as const;
+
+// Legacy constants for backward compatibility
 export const AnimationEffects = {
     FADE: 'fade',
     SLIDE: 'slide',
@@ -57,7 +71,7 @@ export const EaseFunctions = {
     NONE: 'none'
 } as const;
 
-// Update AnimationConfig interface
+// Simplified animation config interface
 export interface AnimationConfig {
     effect: AnimationEffectType;
     duration: number;

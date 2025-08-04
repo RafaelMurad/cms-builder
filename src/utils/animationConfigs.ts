@@ -1,52 +1,35 @@
-import { AnimationConfig, AnimationEffectType } from '../types';
+// Simplified animation configuration
+// Focus on essential transitions only
 
-type AnimationPresets = {
-    [key: string]: Omit<AnimationConfig, 'effect'>;
-};
+export type SimpleAnimationType = 'none' | 'fade' | 'slide';
 
-export const animationPresets: AnimationPresets = {
+export interface SimpleAnimationConfig {
+    type: SimpleAnimationType;
+    duration: number; // in seconds
+    easing: string; // CSS easing function
+}
+
+// Simple animation presets - only what we actually need
+export const SIMPLE_ANIMATIONS: Record<SimpleAnimationType, SimpleAnimationConfig> = {
     none: {
+        type: 'none',
         duration: 0,
-        ease: 'none'
+        easing: 'ease'
     },
     fade: {
-        duration: 0.8,
-        ease: 'power2.inOut',
-        crossfade: {
-            from: { opacity: 0 },
-            to: { opacity: 1 },
-            prevOut: { opacity: 0 }
-        }
+        type: 'fade',
+        duration: 0.6,
+        easing: 'ease-in-out'
     },
     slide: {
+        type: 'slide',
         duration: 0.8,
-        ease: 'power2.inOut'
-    },
-    'slide-up': {
-        duration: 0.9,
-        ease: 'power3.out',
-        from: { opacity: 0, y: 100 },
-        to: { opacity: 1, y: 0 }
-    },
-    'slide-down': {
-        duration: 0.9,
-        ease: 'power3.out',
-        from: { opacity: 0, y: -100 },
-        to: { opacity: 1, y: 0 }
-    },
-    scale: {
-        duration: 0.8,
-        ease: 'power2.out',
-        from: { opacity: 0, scale: 0.8 },
-        to: { opacity: 1, scale: 1 }
+        easing: 'ease-in-out'
     }
 };
 
-export function getAnimationConfig(effect: string): AnimationConfig {
-    const validEffect = (effect in animationPresets) ? effect as AnimationEffectType : 'none';
-    const preset = animationPresets[validEffect];
-    return {
-        effect: validEffect,
-        ...preset
-    };
+// Get animation config with fallback
+export function getSimpleAnimation(type: string): SimpleAnimationConfig {
+    const animationType = type as SimpleAnimationType;
+    return SIMPLE_ANIMATIONS[animationType] || SIMPLE_ANIMATIONS.fade;
 }
