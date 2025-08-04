@@ -1,31 +1,24 @@
-'use client'
+"use client";
 
-import { useRef } from 'react'
-import SimplifiedGallery from './SimplifiedGallery'
-import enhancedGalleryData from '../data/enhancedGalleryData'
-import { GalleryConfig } from '../types'
+import { useRef } from "react";
+import SimplifiedGallery from "./SimplifiedGallery";
+import { GalleryConfig } from "../types";
 
 interface GalleryProps {
-  galleries?: GalleryConfig[];
+  galleries: GalleryConfig[];
   className?: string;
 }
 
-const Gallery = ({ 
-  galleries = enhancedGalleryData,
-  className = '' 
-}: GalleryProps) => {
-  const galleryRef = useRef<HTMLDivElement>(null)
+const Gallery = ({ galleries, className = "" }: GalleryProps) => {
+  const galleryRef = useRef<HTMLDivElement>(null);
 
   return (
     <div ref={galleryRef} className={`gallery-container ${className}`}>
-      {galleries.map(gallery => (
-        <SimplifiedGallery 
-          key={gallery.id} 
-          gallery={gallery} 
-        />
+      {galleries.map((gallery) => (
+        <SimplifiedGallery key={gallery.id} gallery={gallery} />
       ))}
     </div>
-  )
-}
+  );
+};
 
-export default Gallery
+export default Gallery;

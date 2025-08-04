@@ -3,16 +3,16 @@
 import { useEffect, useRef } from 'react';
 
 interface UseSimpleAnimationOptions {
-  trigger?: 'load' | 'scroll' | 'hover';
-  animationType?: 'fade' | 'slideUp' | 'scale';
-  duration?: number; // in seconds
-  delay?: number; // in seconds
-  easing?: string;
+    trigger?: 'load' | 'scroll' | 'hover';
+    animationType?: 'fade' | 'slideUp' | 'scale';
+    duration?: number; // in seconds
+    delay?: number; // in seconds
+    easing?: string;
 }
 
 interface UseSimpleAnimationReturn {
-  ref: React.RefObject<HTMLElement | null>;
-  animate: () => void;
+    ref: React.RefObject<HTMLElement | null>;
+    animate: () => void;
 }
 
 /**
@@ -20,110 +20,110 @@ interface UseSimpleAnimationReturn {
  * Replaces the complex GSAP implementation with simple, performant CSS
  */
 export function useSimpleAnimation(
-  options: UseSimpleAnimationOptions = {}
+    options: UseSimpleAnimationOptions = {}
 ): UseSimpleAnimationReturn {
-  const {
-    trigger = 'scroll',
-    animationType = 'fade',
-    duration = 0.6,
-    delay = 0,
-    easing = 'ease-out'
-  } = options;
+    const {
+        trigger = 'scroll',
+        animationType = 'fade',
+        duration = 0.6,
+        delay = 0,
+        easing = 'ease-out'
+    } = options;
 
-  const elementRef = useRef<HTMLElement>(null);
+    const elementRef = useRef<HTMLElement>(null);
 
-  const animate = () => {
-    if (!elementRef.current) return;
+    const animate = () => {
+        if (!elementRef.current) return;
 
-    const element = elementRef.current;
-    
-    // Apply animation styles
-    element.style.transition = `all ${duration}s ${easing}`;
-    if (delay > 0) {
-      element.style.transitionDelay = `${delay}s`;
-    }
+        const element = elementRef.current;
 
-    switch (animationType) {
-      case 'fade':
-        element.style.opacity = '1';
-        break;
-      case 'slideUp':
-        element.style.opacity = '1';
-        element.style.transform = 'translateY(0)';
-        break;
-      case 'scale':
-        element.style.opacity = '1';
-        element.style.transform = 'scale(1)';
-        break;
-    }
-  };
-
-  const reset = () => {
-    if (!elementRef.current) return;
-
-    const element = elementRef.current;
-    
-    switch (animationType) {
-      case 'fade':
-        element.style.opacity = '0';
-        break;
-      case 'slideUp':
-        element.style.opacity = '0';
-        element.style.transform = 'translateY(20px)';
-        break;
-      case 'scale':
-        element.style.opacity = '0';
-        element.style.transform = 'scale(0.95)';
-        break;
-    }
-  };
-
-  useEffect(() => {
-    if (!elementRef.current) return;
-
-    const element = elementRef.current;
-    
-    // Set initial state
-    reset();
-
-    if (trigger === 'load') {
-      // Animate immediately
-      requestAnimationFrame(animate);
-    } else if (trigger === 'scroll') {
-      // Use Intersection Observer for scroll-triggered animations
-      const observer = new IntersectionObserver(
-        (entries) => {
-          entries.forEach((entry) => {
-            if (entry.isIntersecting) {
-              animate();
-            }
-          });
-        },
-        {
-          threshold: 0.1,
-          rootMargin: '0px 0px -10% 0px'
+        // Apply animation styles
+        element.style.transition = `all ${duration}s ${easing}`;
+        if (delay > 0) {
+            element.style.transitionDelay = `${delay}s`;
         }
-      );
 
-      observer.observe(element);
+        switch (animationType) {
+            case 'fade':
+                element.style.opacity = '1';
+                break;
+            case 'slideUp':
+                element.style.opacity = '1';
+                element.style.transform = 'translateY(0)';
+                break;
+            case 'scale':
+                element.style.opacity = '1';
+                element.style.transform = 'scale(1)';
+                break;
+        }
+    };
 
-      return () => observer.disconnect();
-    } else if (trigger === 'hover') {
-      const handleMouseEnter = () => animate();
-      const handleMouseLeave = () => reset();
+    const reset = () => {
+        if (!elementRef.current) return;
 
-      element.addEventListener('mouseenter', handleMouseEnter);
-      element.addEventListener('mouseleave', handleMouseLeave);
+        const element = elementRef.current;
 
-      return () => {
-        element.removeEventListener('mouseenter', handleMouseEnter);
-        element.removeEventListener('mouseleave', handleMouseLeave);
-      };
-    }
-  }, [trigger, animationType, duration, delay, easing]);
+        switch (animationType) {
+            case 'fade':
+                element.style.opacity = '0';
+                break;
+            case 'slideUp':
+                element.style.opacity = '0';
+                element.style.transform = 'translateY(20px)';
+                break;
+            case 'scale':
+                element.style.opacity = '0';
+                element.style.transform = 'scale(0.95)';
+                break;
+        }
+    };
 
-  return {
-    ref: elementRef,
-    animate
-  };
+    useEffect(() => {
+        if (!elementRef.current) return;
+
+        const element = elementRef.current;
+
+        // Set initial state
+        reset();
+
+        if (trigger === 'load') {
+            // Animate immediately
+            requestAnimationFrame(animate);
+        } else if (trigger === 'scroll') {
+            // Use Intersection Observer for scroll-triggered animations
+            const observer = new IntersectionObserver(
+                (entries) => {
+                    entries.forEach((entry) => {
+                        if (entry.isIntersecting) {
+                            animate();
+                        }
+                    });
+                },
+                {
+                    threshold: 0.1,
+                    rootMargin: '0px 0px -10% 0px'
+                }
+            );
+
+            observer.observe(element);
+
+            return () => observer.disconnect();
+        } else if (trigger === 'hover') {
+            const handleMouseEnter = () => animate();
+            const handleMouseLeave = () => reset();
+
+            element.addEventListener('mouseenter', handleMouseEnter);
+            element.addEventListener('mouseleave', handleMouseLeave);
+
+            return () => {
+                element.removeEventListener('mouseenter', handleMouseEnter);
+                element.removeEventListener('mouseleave', handleMouseLeave);
+            };
+        }
+    }, [trigger, animationType, duration, delay, easing]);
+
+    return {
+        ref: elementRef,
+        animate
+    };
 }
