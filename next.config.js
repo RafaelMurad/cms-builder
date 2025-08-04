@@ -10,6 +10,9 @@ const nextConfig = {
     // Configure image sizes for better optimization
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
 
+    // Enable optimization for local images
+    unoptimized: false,
+
     // Allow local images without domain restriction
     remotePatterns: [
       {
@@ -25,11 +28,8 @@ const nextConfig = {
     // Increase cache time for better performance
     minimumCacheTTL: 86400, // 24 hours
   },
-
-  // Enable experimental features for better image handling
-  experimental: {
-    optimizePackageImports: ["lucide-react"],
-  },
 };
+
+module.exports = nextConfig;
 
 module.exports = nextConfig;
