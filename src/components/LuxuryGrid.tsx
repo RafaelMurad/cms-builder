@@ -10,7 +10,23 @@ interface LuxuryGridProps {
 
 export default function LuxuryGrid({ galleries }: LuxuryGridProps) {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+  const [scrollY, setScrollY] = useState(0);
   const itemRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const sectionRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (sectionRef.current) {
+        const rect = sectionRef.current.getBoundingClientRect();
+        const scrollProgress = Math.max(0, Math.min(1, (window.innerHeight - rect.top) / window.innerHeight));
+        setScrollY(scrollProgress);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    handleScroll();
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   useEffect(() => {
     const observers = itemRefs.current.map((item, index) => {
@@ -22,11 +38,11 @@ export default function LuxuryGrid({ galleries }: LuxuryGridProps) {
             if (entry.isIntersecting) {
               setTimeout(() => {
                 entry.target.classList.add("visible");
-              }, index * 100); // Stagger the animations
+              }, index * 80); // Faster stagger for smoother feel
             }
           });
         },
-        { threshold: 0.2 }
+        { threshold: 0.15 }
       );
 
       observer.observe(item);
@@ -39,7 +55,7 @@ export default function LuxuryGrid({ galleries }: LuxuryGridProps) {
   }, [galleries]);
 
   return (
-    <section className="min-h-screen py-32 px-8 md:px-12 lg:px-16 bg-white">
+    <section ref={sectionRef} className="min-h-screen py-32 px-8 md:px-12 lg:px-16 bg-white">
       <div className="max-w-screen-2xl mx-auto">
         {/* Section Header */}
         <div className="mb-24 text-center">
@@ -52,22 +68,30 @@ export default function LuxuryGrid({ galleries }: LuxuryGridProps) {
           </p>
         </div>
 
-        {/* Clean Grid with Scroll Reveals */}
+        {/* Parallax Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-1">
           {galleries.map((gallery, index) => {
             const firstItem = gallery.items[0];
             if (!firstItem) return null;
 
+            // Different parallax speeds for each item
+            const parallaxSpeed = 0.5 + (index % 3) * 0.2;
+            const parallaxY = scrollY * 30 * parallaxSpeed * (index % 2 === 0 ? 1 : -1);
+
             return (
               <div
                 key={gallery.id}
                 ref={(el) => { itemRefs.current[index] = el; }}
-                className="gallery-item-reveal group relative aspect-[3/4] overflow-hidden cursor-pointer hover-glow"
+                className="gallery-item-reveal group relative aspect-[3/4] overflow-hidden cursor-pointer"
                 onMouseEnter={() => setHoveredIndex(index)}
                 onMouseLeave={() => setHoveredIndex(null)}
+                style={{
+                  transform: `translateY(${parallaxY}px)`,
+                  transition: 'transform 0.1s linear',
+                }}
               >
-                {/* Media */}
-                <div className="absolute inset-0 transition-transform duration-700 ease-out group-hover:scale-102">
+                {/* Media with smooth scale */}
+                <div className="absolute inset-0 transition-all duration-[800ms] ease-out group-hover:scale-105">
                   <MediaItem
                     item={firstItem}
                     className="w-full h-full"
@@ -75,12 +99,12 @@ export default function LuxuryGrid({ galleries }: LuxuryGridProps) {
                   />
                 </div>
 
-                {/* Subtle gradient overlay */}
-                <div className="absolute inset-0 bg-gradient-to-t from-luxury-black/60 via-luxury-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                {/* Morphing overlay */}
+                <div className="absolute inset-0 bg-gradient-to-t from-luxury-black/70 via-luxury-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-700" />
 
-                {/* Info */}
-                <div className="absolute inset-0 p-8 flex flex-col justify-end opacity-0 group-hover:opacity-100 transition-all duration-500 transform translate-y-4 group-hover:translate-y-0">
-                  <div className="text-white">
+                {/* Info with smooth morph */}
+                <div className="absolute inset-0 p-8 flex flex-col justify-end opacity-0 group-hover:opacity-100 transition-all duration-700 transform translate-y-6 group-hover:translate-y-0">
+                  <div className="text-white transform transition-transform duration-700 group-hover:scale-105">
                     <p className="text-[10px] tracking-luxury uppercase font-light mb-2 opacity-70">
                       {gallery.layout}
                     </p>
@@ -90,26 +114,23 @@ export default function LuxuryGrid({ galleries }: LuxuryGridProps) {
                   </div>
                 </div>
 
-                {/* Shine effect on hover */}
-                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none">
-                  <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-luxury-gold/5 via-transparent to-transparent" />
+                {/* Edge glow */}
+                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700">
+                  <div className="absolute inset-0 border border-luxury-gold/20" />
                 </div>
               </div>
             );
           })}
         </div>
 
-        {/* View More with subtle animation */}
+        {/* View More */}
         <div className="mt-24 text-center">
           <div className="luxury-divider mb-8" />
           <a
             href="#all-work"
-            className="inline-block relative group"
+            className="inline-block text-luxury-black hover:text-luxury-gray transition-all duration-500 text-xs tracking-luxury uppercase font-light luxury-underline hover:tracking-wide"
           >
-            <span className="text-luxury-black hover:text-luxury-gray transition-colors duration-500 text-xs tracking-luxury uppercase font-light luxury-underline">
-              View All Projects
-            </span>
-            <span className="absolute inset-0 blur-xl bg-luxury-gold opacity-0 group-hover:opacity-10 transition-opacity duration-500" />
+            View All Projects
           </a>
         </div>
       </div>

@@ -208,6 +208,19 @@ section.gallery-row {
   animation: expand 1s cubic-bezier(0.23, 1, 0.32, 1) forwards;
 }
 
+@keyframes expand-full {
+  from {
+    width: 0;
+  }
+  to {
+    width: 100%;
+  }
+}
+
+.animate-expand-full {
+  animation: expand-full 1.5s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+}
+
 /* Scroll pulse animation */
 @keyframes scroll-pulse {
   0%, 100% {
