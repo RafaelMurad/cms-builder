@@ -184,3 +184,78 @@ section.gallery-row {
   background: #0a0a0a;
   margin: 0 auto;
 }
+
+/* Magnetic hover for typography */
+.hover-magnetic-container {
+  transition: transform 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.hover-magnetic-container:hover {
+  transform: translateY(-4px);
+}
+
+/* Expand animation for divider */
+@keyframes expand {
+  from {
+    width: 0;
+  }
+  to {
+    width: 60px;
+  }
+}
+
+.animate-expand {
+  animation: expand 1s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+}
+
+/* Scroll pulse animation */
+@keyframes scroll-pulse {
+  0%, 100% {
+    opacity: 0.3;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+.animate-scroll-pulse {
+  animation: scroll-pulse 2s ease-in-out infinite;
+}
+
+/* Gallery reveal on scroll */
+.gallery-item-reveal {
+  opacity: 0;
+  transform: translateY(60px) scale(0.95);
+  transition: opacity 0.8s cubic-bezier(0.23, 1, 0.32, 1),
+              transform 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.gallery-item-reveal.visible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+/* Glow effect on hover */
+.hover-glow {
+  position: relative;
+  transition: transform 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.hover-glow::before {
+  content: '';
+  position: absolute;
+  inset: -20px;
+  background: radial-gradient(circle, rgba(201, 165, 90, 0.15) 0%, transparent 70%);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  pointer-events: none;
+  z-index: -1;
+}
+
+.hover-glow:hover::before {
+  opacity: 1;
+}
+
+.hover-glow:hover {
+  transform: translateY(-8px);
+}
