@@ -4,8 +4,10 @@ import { useState, useEffect } from "react";
 
 export default function HeroSection() {
   const [scrollY, setScrollY] = useState(0);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    setMounted(true);
     const handleScroll = () => {
       setScrollY(window.scrollY);
     };
@@ -14,85 +16,103 @@ export default function HeroSection() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const parallaxOffset = scrollY * 0.5;
-  const opacity = Math.max(1 - scrollY / 600, 0);
-  const scale = Math.max(1 - scrollY / 2000, 0.95);
+  // Fluid scroll effects
+  const contentOpacity = Math.max(1 - scrollY / 700, 0);
+  const blurAmount = Math.min(scrollY / 100, 8);
 
   return (
     <section className="min-h-screen flex items-center justify-center relative bg-white pt-32 pb-24 px-8 md:px-12 lg:px-16 overflow-hidden">
-      {/* Parallax background layers */}
-      <div
-        className="absolute inset-0 pointer-events-none"
-        style={{
-          transform: `translateY(${parallaxOffset}px)`,
-          opacity: opacity * 0.3,
-        }}
-      >
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 rounded-full bg-luxury-gold/5 blur-3xl" />
-        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 rounded-full bg-luxury-gray/5 blur-3xl" />
+      {/* Floating ambient shapes */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden">
+        <div className="absolute top-1/3 left-1/4 w-72 h-72 rounded-full bg-luxury-gold/5 blur-3xl animate-float-slow" />
+        <div className="absolute bottom-1/3 right-1/4 w-96 h-96 rounded-full bg-luxury-gray/5 blur-3xl animate-float-slower" />
       </div>
 
       <div
         className="max-w-screen-xl mx-auto text-center relative z-20"
         style={{
-          transform: `translateY(${parallaxOffset * 0.3}px) scale(${scale})`,
-          opacity,
+          opacity: contentOpacity,
+          filter: `blur(${blurAmount}px)`,
+          transition: 'filter 0.1s linear',
         }}
       >
-        <div className="space-y-20 animate-fade-in-slow">
-          {/* Overline */}
-          <div className="opacity-0 animate-fade-in" style={{ animationDelay: "0.3s", animationFillMode: "forwards" }}>
-            <p className="text-luxury-gray text-xs tracking-luxury uppercase font-light">
+        <div className="space-y-20">
+          {/* Overline with wave reveal */}
+          <div className="opacity-0 animate-fade-in" style={{ animationDelay: "0.2s", animationFillMode: "forwards" }}>
+            <p className="text-luxury-gray text-xs tracking-luxury uppercase font-light kinetic-text">
               Creative Direction + Design
             </p>
           </div>
 
-          {/* Main heading */}
+          {/* Kinetic typography - letters appear with stagger */}
           <div className="font-times">
-            <div className="opacity-0 animate-slide-up" style={{ animationDelay: "0.5s", animationFillMode: "forwards" }}>
-              <h1 className="text-7xl md:text-9xl lg:text-[12rem] font-light tracking-tighter leading-none text-luxury-black mb-6 transition-all duration-700 hover:tracking-tight">
-                STUDIO
+            <div className="overflow-hidden">
+              <h1 className="text-7xl md:text-9xl lg:text-[12rem] font-light tracking-tighter leading-none text-luxury-black mb-6">
+                {mounted && "STUDIO".split("").map((letter, i) => (
+                  <span
+                    key={i}
+                    className="inline-block opacity-0 animate-letter-appear kinetic-letter"
+                    style={{
+                      animationDelay: `${0.4 + i * 0.08}s`,
+                      animationFillMode: "forwards",
+                    }}
+                  >
+                    {letter}
+                  </span>
+                ))}
               </h1>
             </div>
-            <div className="opacity-0 animate-slide-up" style={{ animationDelay: "0.7s", animationFillMode: "forwards" }}>
-              <h1 className="text-7xl md:text-9xl lg:text-[12rem] font-light tracking-tighter leading-none text-luxury-black transition-all duration-700 hover:tracking-tight">
-                HAUS
+            <div className="overflow-hidden">
+              <h1 className="text-7xl md:text-9xl lg:text-[12rem] font-light tracking-tighter leading-none text-luxury-black">
+                {mounted && "HAUS".split("").map((letter, i) => (
+                  <span
+                    key={i}
+                    className="inline-block opacity-0 animate-letter-appear kinetic-letter"
+                    style={{
+                      animationDelay: `${0.9 + i * 0.08}s`,
+                      animationFillMode: "forwards",
+                    }}
+                  >
+                    {letter}
+                  </span>
+                ))}
               </h1>
             </div>
           </div>
 
-          {/* Divider */}
-          <div className="opacity-0 animate-fade-in" style={{ animationDelay: "0.9s", animationFillMode: "forwards" }}>
+          {/* Divider with liquid expand */}
+          <div className="opacity-0 animate-fade-in" style={{ animationDelay: "1.2s", animationFillMode: "forwards" }}>
             <div className="relative overflow-hidden h-px">
-              <div className="luxury-divider" />
-              <div className="absolute left-1/2 top-0 -translate-x-1/2 w-0 h-px bg-luxury-gold animate-expand-full" style={{ animationDelay: "1.2s" }} />
+              <div className="absolute left-1/2 top-0 -translate-x-1/2 w-0 h-px bg-luxury-gold animate-expand-elastic" style={{ animationDelay: "1.4s" }} />
             </div>
           </div>
 
-          {/* Subtitle */}
-          <p className="text-luxury-gray text-base md:text-lg max-w-3xl mx-auto leading-relaxed font-light tracking-wide opacity-0 animate-fade-in" style={{ animationDelay: "1.1s", animationFillMode: "forwards" }}>
-            Crafting timeless visual narratives for the world&apos;s most
-            <br />
-            discerning brands. Where elegance meets innovation.
-          </p>
+          {/* Subtitle with wave appearance */}
+          <div className="opacity-0 animate-wave-in" style={{ animationDelay: "1.3s", animationFillMode: "forwards" }}>
+            <p className="text-luxury-gray text-base md:text-lg max-w-3xl mx-auto leading-relaxed font-light tracking-wide">
+              Crafting timeless visual narratives for the world&apos;s most
+              <br />
+              discerning brands. Where elegance meets innovation.
+            </p>
+          </div>
 
-          {/* CTA */}
-          <div className="opacity-0 animate-fade-in" style={{ animationDelay: "1.4s", animationFillMode: "forwards" }}>
+          {/* CTA with fluid reveal */}
+          <div className="opacity-0 animate-fade-in" style={{ animationDelay: "1.6s", animationFillMode: "forwards" }}>
             <a
               href="#work"
-              className="inline-block text-luxury-black hover:text-luxury-gray transition-all duration-500 text-xs tracking-luxury uppercase font-light luxury-underline hover:tracking-wide"
+              className="inline-block text-luxury-black hover:text-luxury-gray transition-all duration-700 text-xs tracking-luxury uppercase font-light luxury-underline hover:tracking-wide group"
             >
-              Explore Our Work
+              <span className="inline-block transition-transform duration-700 group-hover:translate-x-1">Explore Our Work</span>
             </a>
           </div>
         </div>
       </div>
 
-      {/* Scroll indicator */}
+      {/* Scroll indicator with fluid pulse */}
       <div
         className="absolute bottom-12 left-1/2 transform -translate-x-1/2 opacity-0 animate-fade-in transition-opacity duration-500"
         style={{
-          animationDelay: "1.6s",
+          animationDelay: "1.8s",
           animationFillMode: "forwards",
           opacity: Math.max(1 - scrollY / 300, 0),
         }}
