@@ -1,7 +1,6 @@
 import "./globals.css";
 import Header from "../components/Header";
 import { ReactNode } from "react";
-import { inter } from "../fonts/fonts";
 
 export const metadata = {
   title: "Studio Haus | Creative Direction + Design",
@@ -16,7 +15,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
   return (
     <html lang="en">
       <body
-        className={`bg-neutral-50 font-sans overflow-x-hidden ${inter.className}`}
+        className="bg-neutral-50 font-sans overflow-x-hidden"
       >
         <Header />
         <main className="relative">{children}</main>

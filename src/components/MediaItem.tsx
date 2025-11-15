@@ -67,7 +67,9 @@ export default memo(function MediaItem({
               error.name !== "AbortError" &&
               error.name !== "NotAllowedError"
             ) {
-              console.warn("Video play failed:", error);
+              if (process.env.NODE_ENV === "development") {
+                console.warn("Video play failed:", error);
+              }
             }
           }
         };
