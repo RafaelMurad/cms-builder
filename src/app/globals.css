@@ -2,19 +2,40 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Smooth scroll behavior */
+/* Lenis Smooth Scroll */
+html.lenis {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+.lenis.lenis-scrolling iframe {
+  pointer-events: none;
+}
+
+/* Immersive Design Base */
 html {
-  scroll-behavior: smooth;
+  scroll-behavior: auto; /* Let Lenis handle scrolling */
 }
 
-/* Portfolio studio aesthetic */
 body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto",
-    sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", sans-serif;
   letter-spacing: -0.01em;
+  background: #000;
+  color: #fff;
 }
 
-/* Remove default margins and ensure full viewport sections */
+/* Remove default margins */
 * {
   margin: 0;
   padding: 0;
