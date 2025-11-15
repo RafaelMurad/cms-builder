@@ -24,7 +24,9 @@ export class SimpleGalleryService {
             const galleryDirs = await this.fileService.getGalleryDirectories();
 
             if (galleryDirs.length === 0) {
-                console.warn('No gallery directories found in assets folder');
+                if (process.env.NODE_ENV === 'development') {
+                    console.warn('No gallery directories found in assets folder');
+                }
                 return [];
             }
 
@@ -43,7 +45,9 @@ export class SimpleGalleryService {
             });
 
         } catch (error) {
-            console.error('Error loading galleries:', error);
+            if (process.env.NODE_ENV === 'development') {
+                console.error('Error loading galleries:', error);
+            }
             return [];
         }
     }

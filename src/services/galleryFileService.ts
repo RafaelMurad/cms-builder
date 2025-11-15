@@ -12,7 +12,9 @@ export class GalleryFileService {
         try {
             await fs.access(this.assetsDirectory);
         } catch (error) {
-            console.warn(`Assets directory not found at ${this.assetsDirectory}. Creating directory...`);
+            if (process.env.NODE_ENV === 'development') {
+                console.warn(`Assets directory not found at ${this.assetsDirectory}. Creating directory...`);
+            }
             await fs.mkdir(this.assetsDirectory, { recursive: true });
         }
     }

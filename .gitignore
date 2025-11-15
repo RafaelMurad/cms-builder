@@ -89,3 +89,7 @@ storybook-static/
 # Performance and Analysis
 .lighthouse/
 .analyzing/
+
+# TypeScript
+*.tsbuildinfo
+tsconfig.tsbuildinfo
