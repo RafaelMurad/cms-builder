@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef } from "react";
-import BentoGrid from "./BentoGrid";
+import LuxuryGrid from "./LuxuryGrid";
 import SimplifiedGallery from "./SimplifiedGallery";
 import { GalleryConfig } from "../types";
 
@@ -16,18 +16,18 @@ const Gallery = ({ galleries, className = "" }: GalleryProps) => {
   if (!galleries || galleries.length === 0) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <p className="text-white/50 text-xl">No galleries found.</p>
+        <p className="text-luxury-gray text-sm">No galleries found.</p>
       </div>
     );
   }
 
   return (
     <div ref={galleryRef} className={`w-full ${className}`}>
-      {/* Bento Grid showcase */}
-      <BentoGrid galleries={galleries.slice(0, 6)} />
+      {/* Luxury Grid showcase */}
+      <LuxuryGrid galleries={galleries.slice(0, 9)} />
 
       {/* Full gallery layouts */}
-      <div id="all-work">
+      <div id="all-work" className="bg-luxury-cream">
         {galleries.map((gallery) => (
           <SimplifiedGallery key={gallery.id} gallery={gallery} />
         ))}

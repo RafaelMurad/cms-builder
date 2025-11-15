@@ -1,11 +1,10 @@
 import "./globals.css";
 import Header from "../components/Header";
-import CustomCursor from "../components/CustomCursor";
 import { ReactNode } from "react";
 
 export const metadata = {
   title: "Studio Haus | Creative Direction + Design",
-  description: "Immersive creative direction and design studio experience",
+  description: "Luxury creative direction and design studio",
 };
 
 interface RootLayoutProps {
@@ -16,17 +15,15 @@ export default function RootLayout({ children }: RootLayoutProps) {
   return (
     <html lang="en" className="smooth-scroll">
       <body
-        className="bg-dark-100 font-sans overflow-x-hidden text-white"
+        className="bg-white font-sans overflow-x-hidden text-luxury-black antialiased"
       >
-        <CustomCursor />
         <Header />
         <main className="relative">{children}</main>
         <a
           href="mailto:contact@studiohaus.com"
-          className="fixed bottom-8 left-8 z-50 px-8 py-4 glass-effect text-white hover:glass-dark transition-all duration-500 text-sm tracking-widest uppercase font-semibold magnetic group overflow-hidden"
+          className="fixed bottom-12 right-12 z-50 text-luxury-black hover:text-luxury-gray transition-colors duration-300 text-xs tracking-luxury uppercase font-light luxury-underline"
         >
-          <span className="relative z-10">Contact</span>
-          <div className="absolute inset-0 bg-gradient-fire opacity-0 group-hover:opacity-20 transition-opacity duration-500" />
+          Contact
         </a>
       </body>
     </html>
