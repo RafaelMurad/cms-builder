@@ -1,6 +1,5 @@
 import "./globals.css";
 import MinimalNav from "../components/MinimalNav";
-import SmoothScroll from "../components/SmoothScroll";
 import { ReactNode } from "react";
 
 export const metadata = {
@@ -14,9 +13,8 @@ interface RootLayoutProps {
 
 export default function RootLayout({ children }: RootLayoutProps) {
   return (
-    <html lang="en">
+    <html lang="en" className="scroll-smooth snap-y snap-mandatory">
       <body className="bg-black font-sans overflow-x-hidden text-white antialiased">
-        <SmoothScroll />
         <MinimalNav />
         <main>{children}</main>
       </body>

@@ -29,7 +29,7 @@ export default function ImmersiveHero({
   return (
     <section
       ref={containerRef}
-      className="relative h-screen w-full overflow-hidden"
+      className="relative h-screen w-full overflow-hidden snap-start"
     >
       {/* Media Background */}
       <motion.div
