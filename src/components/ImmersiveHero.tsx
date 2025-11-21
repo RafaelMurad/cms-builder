@@ -30,11 +30,13 @@ export default function ImmersiveHero({
     <section
       ref={containerRef}
       className="relative h-screen w-full overflow-hidden snap-start"
+      aria-label={`Hero section: ${title}`}
     >
-      {/* Media Background */}
+      {/* Media Background - decorative, hidden from screen readers */}
       <motion.div
         style={{ scale }}
-        className="absolute inset-0 w-full h-full"
+        className="absolute inset-0 w-full h-full motion-safe:transition-all motion-reduce:transition-none"
+        aria-hidden="true"
       >
         {videoUrl ? (
           <div className="relative w-full h-full">
@@ -43,9 +45,12 @@ export default function ImmersiveHero({
               loop
               muted
               playsInline
+              aria-label={`Background video for ${title}`}
               className="absolute inset-0 w-full h-full object-cover"
             >
               <source src={videoUrl} type="video/mp4" />
+              {/* Fallback for browsers that don't support video */}
+              Your browser does not support the video tag.
             </video>
             {/* Dark overlay for better text readability */}
             <div className="absolute inset-0 bg-black/30" />
@@ -54,7 +59,8 @@ export default function ImmersiveHero({
           <>
             <img
               src={imageUrl}
-              alt={title}
+              alt={`Hero background image for ${title}`}
+              loading="eager"
               className="absolute inset-0 w-full h-full object-cover"
             />
             <div className="absolute inset-0 bg-black/20" />
@@ -74,7 +80,7 @@ export default function ImmersiveHero({
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1, delay: 0.3 }}
-            className="text-6xl md:text-8xl lg:text-9xl font-light tracking-tight text-white mb-6"
+            className="text-6xl md:text-8xl lg:text-9xl font-light tracking-tight text-white mb-6 motion-reduce:transition-none"
           >
             {title}
           </motion.h1>
@@ -83,7 +89,7 @@ export default function ImmersiveHero({
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 1, delay: 0.6 }}
-              className="text-base md:text-lg text-white/80 tracking-wide font-light"
+              className="text-base md:text-lg text-white/80 tracking-wide font-light motion-reduce:transition-none"
             >
               {subtitle}
             </motion.p>
@@ -91,15 +97,16 @@ export default function ImmersiveHero({
         </div>
       </motion.div>
 
-      {/* Scroll Indicator */}
+      {/* Scroll Indicator - decorative hint */}
       <motion.div
         style={{ opacity }}
         className="absolute bottom-12 left-1/2 transform -translate-x-1/2 z-10"
+        aria-hidden="true"
       >
         <motion.div
           animate={{ y: [0, 10, 0] }}
           transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-          className="flex flex-col items-center"
+          className="flex flex-col items-center motion-reduce:animate-none"
         >
           <div className="w-px h-16 bg-gradient-to-b from-white/60 to-transparent" />
           <p className="text-white/60 text-xs tracking-widest uppercase mt-4">

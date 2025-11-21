@@ -396,3 +396,88 @@ section.gallery-row {
 .kinetic-text:hover {
   letter-spacing: 0.2em;
 }
+
+/* ===========================================
+   ACCESSIBILITY STYLES
+   =========================================== */
+
+/* Screen reader only utility */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Focus visible styles for keyboard navigation */
+*:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+}
+
+/* Remove focus outline for mouse users */
+*:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* High contrast focus for dark backgrounds */
+.focus-ring-white:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}
+
+/* ===========================================
+   REDUCED MOTION SUPPORT
+   Respects users who prefer reduced motion
+   =========================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  html {
+    scroll-behavior: auto;
+  }
+
+  /* Disable scroll snap for reduced motion users */
+  html,
+  .snap-y,
+  .snap-mandatory {
+    scroll-snap-type: none;
+  }
+
+  .snap-start {
+    scroll-snap-align: none;
+    scroll-snap-stop: normal;
+  }
+
+  /* Ensure elements are visible without animation */
+  .animate-on-scroll,
+  .gallery-item-reveal,
+  .gallery-item-fluid {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Utility class for elements that should not animate */
+.motion-reduce\:transition-none {
+  transition: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .motion-safe\:transition-all {
+    transition: none !important;
+  }
+}
