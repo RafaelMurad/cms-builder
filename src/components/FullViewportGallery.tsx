@@ -10,12 +10,18 @@ interface FullViewportGalleryProps {
 
 export default function FullViewportGallery({ galleries }: FullViewportGalleryProps) {
   return (
-    <div className="bg-black">
+    <div
+      className="bg-black snap-y snap-mandatory"
+      style={{
+        scrollSnapType: "y mandatory",
+      }}
+    >
       {galleries.map((gallery, index) => (
         <FullViewportSection
           key={gallery.id}
           gallery={gallery}
           index={index}
+          total={galleries.length}
         />
       ))}
     </div>
@@ -25,9 +31,10 @@ export default function FullViewportGallery({ galleries }: FullViewportGalleryPr
 interface FullViewportSectionProps {
   gallery: GalleryConfig;
   index: number;
+  total: number;
 }
 
-function FullViewportSection({ gallery, index }: FullViewportSectionProps) {
+function FullViewportSection({ gallery, index, total }: FullViewportSectionProps) {
   const sectionRef = useRef<HTMLElement>(null);
   const firstItem = gallery.items[0];
 
@@ -36,21 +43,33 @@ function FullViewportSection({ gallery, index }: FullViewportSectionProps) {
     offset: ["start end", "end start"],
   });
 
-  // Text slides in from left when section enters viewport
-  const textX = useTransform(scrollYProgress, [0, 0.3, 0.7, 1], [-100, 0, 0, 100]);
-  const textOpacity = useTransform(scrollYProgress, [0, 0.2, 0.8, 1], [0, 1, 1, 0]);
+  // Text animation: slides in from left, centered when section is in view
+  // 0 = section entering from bottom, 0.5 = section centered, 1 = section leaving top
+  const textX = useTransform(
+    scrollYProgress,
+    [0, 0.35, 0.5, 0.65, 1],
+    [-80, -20, 0, -20, -80]
+  );
+  const textOpacity = useTransform(
+    scrollYProgress,
+    [0, 0.35, 0.5, 0.65, 1],
+    [0, 0.8, 1, 0.8, 0]
+  );
 
   if (!firstItem) return null;
 
   const isVideo = firstItem.type === "video" || firstItem.url?.endsWith(".mp4") || firstItem.url?.endsWith(".webm");
-  const isGif = firstItem.type === "gif" || firstItem.url?.endsWith(".gif");
 
   return (
     <section
       ref={sectionRef}
-      className="relative h-screen w-full overflow-hidden"
+      className="relative h-screen w-full overflow-hidden snap-center"
+      style={{
+        scrollSnapAlign: "center",
+        scrollSnapStop: "always",
+      }}
     >
-      {/* Full Viewport Media - No animations, static display */}
+      {/* Full Viewport Media - Static, no animations */}
       <div className="absolute inset-0 w-full h-full">
         {isVideo ? (
           <video
@@ -70,47 +89,42 @@ function FullViewportSection({ gallery, index }: FullViewportSectionProps) {
           />
         )}
 
-        {/* Subtle dark overlay for text readability */}
-        <div className="absolute inset-0 bg-black/20" />
+        {/* Subtle gradient overlay for text readability */}
+        <div className="absolute inset-0 bg-gradient-to-r from-black/50 via-black/20 to-transparent" />
       </div>
 
-      {/* Project Info - Slides in from left on scroll */}
-      <motion.div
-        style={{ x: textX, opacity: textOpacity }}
-        className="absolute bottom-0 left-0 z-10 p-8 md:p-16 lg:p-24 max-w-2xl"
-      >
-        <div className="space-y-4">
-          {/* Project Number */}
-          <p className="text-white/50 text-sm tracking-[0.3em] uppercase font-light">
-            {String(index + 1).padStart(2, "0")}
-          </p>
-
-          {/* Project Title */}
-          <h2 className="text-4xl md:text-6xl lg:text-7xl font-light text-white tracking-tight leading-none">
-            {gallery.title}
-          </h2>
-
-          {/* Project Description */}
-          {gallery.description && (
-            <p className="text-white/70 text-base md:text-lg font-light leading-relaxed max-w-md">
-              {gallery.description}
+      {/* Project Info - Slides in from left, synced with scroll */}
+      <div className="absolute inset-0 flex items-end">
+        <motion.div
+          style={{ x: textX, opacity: textOpacity }}
+          className="p-8 md:p-12 lg:p-16 pb-16 md:pb-20 lg:pb-24"
+        >
+          <div className="space-y-3">
+            {/* Project Number */}
+            <p className="text-white/40 text-xs tracking-[0.3em] uppercase font-light">
+              {String(index + 1).padStart(2, "0")} / {String(total).padStart(2, "0")}
             </p>
-          )}
 
-          {/* Category/Layout Tag */}
-          <p className="text-white/40 text-xs tracking-[0.2em] uppercase font-light pt-4">
-            {gallery.layout || "Creative Direction"}
-          </p>
-        </div>
-      </motion.div>
+            {/* Project Title */}
+            <h2 className="text-3xl md:text-5xl lg:text-6xl font-light text-white tracking-tight leading-tight">
+              {gallery.title}
+            </h2>
 
-      {/* Scroll Progress Indicator */}
-      <div className="absolute right-8 md:right-16 top-1/2 -translate-y-1/2 z-10">
-        <div className="flex flex-col items-center space-y-2">
-          <span className="text-white/30 text-xs tracking-widest uppercase rotate-90 origin-center whitespace-nowrap">
-            Scroll
-          </span>
-        </div>
+            {/* Project Description */}
+            {gallery.description && (
+              <p className="text-white/60 text-sm md:text-base font-light leading-relaxed max-w-md pt-2">
+                {gallery.description}
+              </p>
+            )}
+
+            {/* Category Tag */}
+            <div className="pt-4">
+              <span className="text-white/30 text-[10px] tracking-[0.2em] uppercase font-light border-b border-white/20 pb-1">
+                {gallery.layout || "Creative Direction"}
+              </span>
+            </div>
+          </div>
+        </motion.div>
       </div>
     </section>
   );
