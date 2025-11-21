@@ -1,5 +1,5 @@
 import { GalleryConfig } from "../types";
-import ImmersiveGallery from "./ImmersiveGallery";
+import FullViewportGallery from "./FullViewportGallery";
 import { SimpleGalleryService } from "../services/simpleGalleryService";
 
 // Initialize simplified service
@@ -30,5 +30,5 @@ export default async function GalleryLoader() {
   }
 
   // Render the gallery component with loaded data
-  return <ImmersiveGallery galleries={galleries} />;
+  return <FullViewportGallery galleries={galleries} />;
 }
