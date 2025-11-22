@@ -2,7 +2,7 @@
  * Site Configuration
  *
  * Centralized configuration for site-wide settings.
- * Easy to customize - just update the values here.
+ * This serves as the fallback when CMS data is unavailable.
  */
 
 export interface NavLink {
@@ -128,7 +128,7 @@ export const siteConfig: SiteConfig = {
 };
 
 // =============================================================================
-// FEATURED PROJECTS - For homepage video sections
+// FEATURED PROJECTS - For homepage video sections (fallback when CMS unavailable)
 // =============================================================================
 
 export const featuredProjects: Project[] = [

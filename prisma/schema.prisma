@@ -1,0 +1,340 @@
+// Prisma Schema for Studio CMS
+// Run: npx prisma generate && npx prisma db push
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// =============================================================================
+// AUTHENTICATION - NextAuth.js Compatible
+// =============================================================================
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@index([userId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+// =============================================================================
+// USER & SUBSCRIPTION
+// =============================================================================
+
+enum SubscriptionTier {
+  FREE
+  STARTER
+  PROFESSIONAL
+  ENTERPRISE
+}
+
+enum SubscriptionStatus {
+  ACTIVE
+  PAST_DUE
+  CANCELED
+  TRIALING
+  PAUSED
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String?   @unique
+  emailVerified DateTime?
+  image         String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  // Subscription
+  subscriptionTier   SubscriptionTier   @default(FREE)
+  subscriptionStatus SubscriptionStatus @default(ACTIVE)
+  stripeCustomerId   String?            @unique
+  stripeSubscriptionId String?          @unique
+  trialEndsAt        DateTime?
+
+  // Usage limits (reset monthly)
+  storageUsedMB      Int      @default(0)
+  apiCallsThisMonth  Int      @default(0)
+  lastUsageReset     DateTime @default(now())
+
+  // Relations
+  accounts    Account[]
+  sessions    Session[]
+  sites       Site[]
+  galleries   Gallery[]
+  mediaFiles  MediaFile[]
+  pages       Page[]
+  apiKeys     ApiKey[]
+  analytics   AnalyticsEvent[]
+
+  @@index([email])
+  @@index([stripeCustomerId])
+}
+
+model ApiKey {
+  id        String   @id @default(cuid())
+  name      String
+  key       String   @unique
+  lastUsed  DateTime?
+  createdAt DateTime @default(now())
+  expiresAt DateTime?
+
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([key])
+}
+
+// =============================================================================
+// CMS CONTENT
+// =============================================================================
+
+model Site {
+  id          String   @id @default(cuid())
+  name        String
+  slug        String   @unique
+  tagline     String?
+  description String?  @db.Text
+  logo        String?
+  favicon     String?
+
+  // Contact
+  email       String?
+  phone       String?
+  address     String?
+
+  // Theme
+  template      String   @default("minimal")
+  primaryColor  String   @default("#000000")
+  secondaryColor String  @default("#666666")
+  accentColor   String   @default("#0066FF")
+  backgroundColor String @default("#FFFFFF")
+  textColor     String   @default("#000000")
+  headingFont   String   @default("Inter")
+  bodyFont      String   @default("Inter")
+
+  // SEO
+  seoTitle       String?
+  seoDescription String? @db.Text
+  seoKeywords    String[]
+  ogImage        String?
+
+  // Settings
+  isPublished   Boolean  @default(false)
+  customDomain  String?  @unique
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  publishedAt   DateTime?
+
+  userId        String
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  galleries     Gallery[]
+  pages         Page[]
+  socialLinks   SocialLink[]
+  analytics     AnalyticsEvent[]
+
+  @@index([userId])
+  @@index([slug])
+}
+
+model Gallery {
+  id          String   @id @default(cuid())
+  title       String
+  slug        String
+  description String?  @db.Text
+  category    String?
+  tags        String[]
+
+  // Layout
+  layout      String   @default("grid") // grid, masonry, carousel, fullscreen, split, stacked
+  columns     Int      @default(3)
+  gap         Int      @default(16)
+
+  // Status
+  isPublished Boolean  @default(false)
+  isFeatured  Boolean  @default(false)
+  sortOrder   Int      @default(0)
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  publishedAt DateTime?
+
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  siteId      String?
+  site        Site?    @relation(fields: [siteId], references: [id], onDelete: SetNull)
+
+  items       GalleryItem[]
+
+  @@unique([siteId, slug])
+  @@index([userId])
+  @@index([siteId])
+}
+
+model GalleryItem {
+  id          String   @id @default(cuid())
+  type        String   @default("image") // image, video
+  url         String
+  thumbnailUrl String?
+  title       String?
+  description String?  @db.Text
+  altText     String?
+
+  // Metadata
+  width       Int?
+  height      Int?
+  duration    Int?     // For videos, in seconds
+  fileSize    Int?     // In bytes
+  mimeType    String?
+
+  // Display
+  isCover     Boolean  @default(false)
+  sortOrder   Int      @default(0)
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  galleryId   String
+  gallery     Gallery  @relation(fields: [galleryId], references: [id], onDelete: Cascade)
+
+  @@index([galleryId])
+}
+
+model Page {
+  id          String   @id @default(cuid())
+  title       String
+  slug        String
+  description String?  @db.Text
+
+  // Content (JSON stored as text)
+  content     String   @db.Text @default("[]")
+
+  // Status
+  isPublished Boolean  @default(false)
+  isHomepage  Boolean  @default(false)
+  sortOrder   Int      @default(0)
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  publishedAt DateTime?
+
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  siteId      String?
+  site        Site?    @relation(fields: [siteId], references: [id], onDelete: SetNull)
+
+  @@unique([siteId, slug])
+  @@index([userId])
+  @@index([siteId])
+}
+
+model MediaFile {
+  id          String   @id @default(cuid())
+  name        String
+  url         String
+  type        String   // image, video, document
+  mimeType    String
+  size        Int      // In bytes
+
+  // Image/Video metadata
+  width       Int?
+  height      Int?
+  duration    Int?     // For videos
+
+  // Organization
+  folder      String?
+  tags        String[]
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([type])
+}
+
+model SocialLink {
+  id        String   @id @default(cuid())
+  platform  String   // instagram, twitter, linkedin, etc.
+  url       String
+  sortOrder Int      @default(0)
+
+  siteId    String
+  site      Site     @relation(fields: [siteId], references: [id], onDelete: Cascade)
+
+  @@index([siteId])
+}
+
+// =============================================================================
+// ANALYTICS
+// =============================================================================
+
+model AnalyticsEvent {
+  id        String   @id @default(cuid())
+  type      String   // page_view, gallery_view, media_view, click, etc.
+  path      String?
+  referrer  String?
+  userAgent String?
+  country   String?
+  city      String?
+  device    String?  // desktop, mobile, tablet
+  browser   String?
+
+  // Additional data (JSON)
+  metadata  String?  @db.Text
+
+  createdAt DateTime @default(now())
+
+  userId    String?
+  user      User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  siteId    String?
+  site      Site?    @relation(fields: [siteId], references: [id], onDelete: SetNull)
+
+  @@index([userId])
+  @@index([siteId])
+  @@index([type])
+  @@index([createdAt])
+}
