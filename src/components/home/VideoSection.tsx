@@ -1,36 +1,32 @@
 "use client";
 
 import Link from "next/link";
-import { Project } from "@/config/site";
+import { Project, createMediaSource } from "@/config/site";
+import { MediaRenderer } from "@/components/ui";
 
-interface VideoSectionProps {
+interface MediaSectionProps {
   project: Project;
 }
 
-export function VideoSection({ project }: VideoSectionProps) {
+/**
+ * MediaSection - Renders a full-viewport section with any media type
+ * Supports: video, image, and gif backgrounds
+ */
+export function MediaSection({ project }: MediaSectionProps) {
+  // Get media source (handles both new format and legacy format)
+  const media = createMediaSource(project);
+
   return (
     <Link
       href={project.href}
       className="block relative w-full h-screen bg-black group"
     >
-      {/* Background Video */}
-      <video
+      {/* Background Media - Video, Image, or GIF */}
+      <MediaRenderer
+        media={media}
         className="absolute inset-0 w-full h-full object-cover object-center"
-        playsInline
-        autoPlay
-        loop
-        muted
-        poster={project.posterSrc}
-      >
-        {project.videoSrcMobile && (
-          <source
-            src={project.videoSrcMobile}
-            type="video/mp4"
-            media="(max-width: 768px)"
-          />
-        )}
-        <source src={project.videoSrc} type="video/mp4" />
-      </video>
+        priority={false}
+      />
 
       {/* Overlay with gradient and content */}
       <div className="absolute inset-0 z-10">
@@ -64,17 +60,27 @@ export function VideoSection({ project }: VideoSectionProps) {
   );
 }
 
-// Collection of video sections
-interface VideoCollectionProps {
+// Legacy alias for backward compatibility
+export const VideoSection = MediaSection;
+
+// Collection of media sections
+interface MediaCollectionProps {
   projects: Project[];
 }
 
-export function VideoCollection({ projects }: VideoCollectionProps) {
+/**
+ * MediaCollection - Renders a collection of full-viewport media sections
+ * Each project can use video, image, or gif media
+ */
+export function MediaCollection({ projects }: MediaCollectionProps) {
   return (
     <div>
       {projects.map((project) => (
-        <VideoSection key={project.id} project={project} />
+        <MediaSection key={project.id} project={project} />
       ))}
     </div>
   );
 }
+
+// Legacy alias for backward compatibility
+export const VideoCollection = MediaCollection;

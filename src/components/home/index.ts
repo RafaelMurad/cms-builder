@@ -1,3 +1,3 @@
 export { VideoHero } from "./VideoHero";
-export { VideoSection, VideoCollection } from "./VideoSection";
+export { MediaSection, MediaCollection, VideoSection, VideoCollection } from "./VideoSection";
 export { CTALinks } from "./CTALinks";
