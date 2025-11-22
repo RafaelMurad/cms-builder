@@ -1,5 +1,5 @@
 import { GalleryConfig } from "../types";
-import Gallery from "./Gallery";
+import FullViewportGallery from "./FullViewportGallery";
 import { SimpleGalleryService } from "../services/simpleGalleryService";
 
 // Initialize simplified service
@@ -16,7 +16,7 @@ export default async function GalleryLoader() {
   // Display a message if no galleries were found
   if (galleries.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center p-8 text-center">
+      <div className="flex flex-col items-center justify-center min-h-screen p-8 text-center bg-black text-white">
         <h2 className="text-xl font-semibold mb-2">No galleries found</h2>
         <p className="mb-4">
           Please create folders in the <code>/public/assets/</code> directory to
@@ -30,5 +30,5 @@ export default async function GalleryLoader() {
   }
 
   // Render the gallery component with loaded data
-  return <Gallery galleries={galleries} />;
+  return <FullViewportGallery galleries={galleries} />;
 }

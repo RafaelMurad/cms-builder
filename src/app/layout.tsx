@@ -1,10 +1,10 @@
 import "./globals.css";
-import Header from "../components/Header";
+import MinimalNav from "../components/MinimalNav";
 import { ReactNode } from "react";
 
 export const metadata = {
   title: "Studio Haus | Creative Direction + Design",
-  description: "Creative direction and design studio",
+  description: "Immersive creative studio crafting visual narratives for luxury brands",
 };
 
 interface RootLayoutProps {
@@ -13,18 +13,19 @@ interface RootLayoutProps {
 
 export default function RootLayout({ children }: RootLayoutProps) {
   return (
-    <html lang="en">
-      <body
-        className="bg-neutral-50 font-sans overflow-x-hidden"
-      >
-        <Header />
-        <main className="relative">{children}</main>
+    <html lang="en" className="scroll-smooth snap-y snap-mandatory">
+      <body className="bg-black font-sans overflow-x-hidden text-white antialiased">
+        {/* Skip to main content link for keyboard users */}
         <a
-          href="mailto:contact@studiohaus.com"
-          className="fixed bottom-8 left-8 z-50 px-6 py-3 bg-white/90 backdrop-blur-sm text-black hover:bg-white transition-all duration-300 text-sm tracking-wide"
+          href="#main-content"
+          className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[100] focus:px-4 focus:py-2 focus:bg-white focus:text-black focus:rounded focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-black"
         >
-          Contact
+          Skip to main content
         </a>
+        <MinimalNav />
+        <main id="main-content" tabIndex={-1}>
+          {children}
+        </main>
       </body>
     </html>
   );

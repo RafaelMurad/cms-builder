@@ -14,9 +14,34 @@ module.exports = {
         'monument-grotesk-mono': ['var(--font-monument-grotesk-mono)', 'monospace'],
       },
       colors: {
+        // Luxury monochromatic palette
+        luxury: {
+          black: '#0a0a0a',
+          charcoal: '#1a1a1a',
+          gray: '#666666',
+          lightgray: '#e5e5e5',
+          cream: '#f8f8f6',
+          white: '#ffffff',
+          gold: '#c9a55a',
+        },
+        // Legacy colors
         cream: '#f5f5f0',
         charcoal: '#2c363f',
-        accent: '#e63946',
+        dark: {
+          50: '#18181b',
+          100: '#0d0d0f',
+          200: '#050507',
+        },
+        accent: {
+          purple: '#8b5cf6',
+          pink: '#ec4899',
+          orange: '#f97316',
+          blue: '#3b82f6',
+        },
+      },
+      letterSpacing: {
+        'luxury': '0.15em',
+        'wide': '0.05em',
       },
       transitionProperty: {
         'height': 'height',
@@ -26,6 +51,8 @@ module.exports = {
         'fade-in': 'fadeIn 0.7s ease-in-out forwards',
         'slide-up': 'slideUp 0.7s ease-in-out forwards',
         'scale-in': 'scaleIn 0.7s ease-in-out forwards',
+        'fade-in-slow': 'fadeIn 1.2s ease-out forwards',
+        'slide-up-slow': 'slideUp 1s ease-out forwards',
       },
       keyframes: {
         fadeIn: {
